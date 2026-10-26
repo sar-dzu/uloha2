@@ -1,6 +1,7 @@
 package com.example.uloha2.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -12,16 +13,26 @@ public class Employee {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "first_name")
+    @NotBlank(message = "Meno je povinné")
+    @Size(min = 2, max = 50, message = "Meno musí mať 2-50 znakov")
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "last_name")
+    @NotBlank(message = "Priezvisko je povinné")
+    @Size(min = 2, max = 50, message = "Priezvisko musí mať 2-50 znakov")
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
+    @PastOrPresent(message = "Dátum narodenia nemôže byť v budúcnosti")
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "email")
+    @NotBlank(message = "Email je povinný")
+    @Pattern(regexp = "^[\\p{L}\\p{N}_%+-]+(?:\\.[\\p{L}\\p{N}_%+-]+)*@(?:[\\p{L}\\p{N}](?:[\\p{L}\\p{N}-]{0,61}[\\p{L}\\p{N}])?\\.)+[\\p{L}\\p{N}](?:[\\p{L}\\p{N}-]{0,61}[\\p{L}\\p{N}])$",
+            message = "Neplatný formát emailovej adresy"
+    )
+    @Size(max = 100, message = "Email môže mať najviac 100 znakov")
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
     @Column(name = "phone")
@@ -30,6 +41,7 @@ public class Employee {
     @Column(name = "job_title")
     private String jobTitle;
 
+    @PositiveOrZero(message = "Plat nemôže byť záporný")
     @Column(name = "salary")
     private Integer salary;
 
