@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="sk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="|${employee.firstName} ${employee.lastName} - People & Co.|">Detail zamestnanca</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" th:href="@{/employees}"><span class="brand-mark" aria-hidden="true">✳</span> people<span>&amp;</span>co.</a>
+    <nav class="site-nav" aria-label="Hlavná navigácia">
+        <a th:href="@{/employees}">Náš tím</a>
+        <a class="nav-add" th:href="@{/employees/create}">Pridať človeka <span aria-hidden="true">↗</span></a>
+    </nav>
+</header>
+
+<main class="page">
+    <a class="back-link" th:href="@{/employees}">← Späť na zoznam</a>
+
+    <div class="detail-head">
+        <p class="eyebrow" th:text="|PROFIL / ${employee.id}|"><span>PROFIL</span></p>
+        <h1 th:text="|${employee.firstName} ${employee.lastName}|">Jana Nováková</h1>
+        <p class="detail-sub" th:text="${employee.jobTitle != null ? employee.jobTitle : 'Zamestnanec'}">Data Analyst</p>
+    </div>
+
+    <dl class="detail-rows">
+        <div>
+            <div class="detail-row">
+                <dt>E-mail</dt>
+                <dd><a class="text-link" th:href="|mailto:${employee.email}|" th:text="${employee.email}">jana@example.com</a></dd>
+            </div>
+            <div class="detail-row">
+                <dt>Telefón</dt>
+                <dd th:text="${employee.phone != null and !#strings.isEmpty(employee.phone) ? employee.phone : '—'}">—</dd>
+            </div>
+            <div class="detail-row">
+                <dt>Dátum narodenia</dt>
+                <dd th:text="${employee.birthDate != null ? #temporals.format(employee.birthDate, 'dd. MM. yyyy') : '—'}">—</dd>
+            </div>
+        </div>
+        <div>
+            <div class="detail-row">
+                <dt>Pozícia</dt>
+                <dd th:text="${employee.jobTitle != null ? employee.jobTitle : '—'}">—</dd>
+            </div>
+            <div class="detail-row">
+                <dt>Typ úväzku</dt>
+                <dd th:text="${employee.fullTime != null ? employee.fullTime : '—'}">—</dd>
+            </div>
+            <div class="detail-row">
+                <dt>Plat</dt>
+                <dd th:text="${employee.salary != null ? employee.salary + ' €' : '—'}">—</dd>
+            </div>
+        </div>
+    </dl>
+
+    <div class="detail-actions">
+        <a class="button" th:href="@{/employees/{id}/edit(id=${employee.id})}">Upraviť profil</a>
+        <form th:action="@{/employees/{id}/delete(id=${employee.id})}" method="post"
+              onsubmit="return confirm('Naozaj chceš vymazať tohto zamestnanca?');">
+            <button class="danger-link" type="submit">Vymazať zamestnanca</button>
+        </form>
+    </div>
+</main>
+
+<footer class="footer"><span>people &amp; co. · employee directory</span><span>a little more human ♡</span></footer>
+</body>
+</html>

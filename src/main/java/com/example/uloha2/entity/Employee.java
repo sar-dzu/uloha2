@@ -2,8 +2,13 @@ package com.example.uloha2.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "employee")
@@ -25,6 +30,7 @@ public class Employee {
 
     @PastOrPresent(message = "Dátum narodenia nemôže byť v budúcnosti")
     @Column(name = "birth_date")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthDate;
 
     @NotBlank(message = "Email je povinný")
@@ -38,16 +44,19 @@ public class Employee {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "job_title")
+    @NotBlank(message = "Vyber pracovnú pozíciu")
+    @Column(name = "job_title", length = 100)
     private String jobTitle;
 
     @PositiveOrZero(message = "Plat nemôže byť záporný")
     @Column(name = "salary")
     private Integer salary;
 
-    @Column(name = "full_time")
-    private boolean fullTime;
+    @NotBlank(message = "Vyber typ úväzku")
+    @Column(name = "full_time", length = 32)
+    private String fullTime;
 
+    
     public Integer getId() {
         return id;
     }
@@ -112,11 +121,11 @@ public class Employee {
         this.salary = salary;
     }
 
-    public boolean getFullTime() {
+    public String getFullTime() {
         return fullTime;
     }
 
-    public void setFullTime(boolean fullTime) {
+    public void setFullTime(String fullTime) {
         this.fullTime = fullTime;
     }
 }

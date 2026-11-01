@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="sk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${employee.id == null ? 'Nový zamestnanec · People & Co.' : 'Upraviť zamestnanca · People & Co.'}">Formulár</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="site-header">
+    <a class="brand" th:href="@{/employees}">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        people<span>&amp;</span>co.
+    </a>
+    <nav class="site-nav" aria-label="Hlavná navigácia">
+        <a th:href="@{/employees}">Náš tím</a>
+        <a class="nav-add" th:href="@{/employees/create}">
+            Pridať človeka <span aria-hidden="true">↗</span>
+        </a>
+    </nav>
+</header>
+
+<main class="page">
+    <div class="form-shell">
+        <a class="back-link" th:href="@{/employees}">
+            ← Späť na zoznam
+        </a>
+
+        <div class="page-heading">
+            <p class="eyebrow"
+               th:text="${employee.id == null ? 'NEW PERSON / 02' : 'EDIT PROFILE / 03'}">
+                FORMULÁR
+            </p>
+
+            <h1 th:if="${employee.id == null}">
+                Nový človek <em>v tíme.</em>
+            </h1>
+
+            <h1 th:unless="${employee.id == null}">
+                Upravme <em>detaily.</em>
+            </h1>
+
+            <p class="lead">
+                Všetko podstatné na jednom mieste.
+                Stačí vyplniť niekoľko údajov.
+            </p>
+        </div>
+
+        <form th:action="${employee.id == null} ? @{/employees} : @{/employees/{id}(id=${employee.id})}"
+              th:object="${employee}"
+              method="post"
+              novalidate>
+
+            <h2 class="form-section-title">Osobné údaje</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="firstName">Meno *</label>
+                    <input id="firstName"
+                           type="text"
+                           th:field="*{firstName}"
+                           placeholder="napr. Jana"
+                           required maxlength="50">
+                    <span class="field-error"
+                          th:if="${#fields.hasErrors('firstName')}"
+                          th:errors="*{firstName}">Chyba</span>
+                </div>
+
+                <div class="field">
+                    <label for="lastName">Priezvisko *</label>
+                    <input id="lastName"
+                           type="text"
+                           th:field="*{lastName}"
+                           placeholder="napr. Nováková"
+                           required maxlength="50">
+                    <span class="field-error"
+                          th:if="${#fields.hasErrors('lastName')}"
+                          th:errors="*{lastName}">Chyba</span>
+                </div>
+
+                <div class="field">
+                    <label for="email">E-mail *</label>
+                    <input id="email"
+                           type="email"
+                           th:field="*{email}"
+                           placeholder="jana@firma.sk"
+                           required maxlength="100">
+                    <span class="field-error"
+                          th:if="${#fields.hasErrors('email')}"
+                          th:errors="*{email}">Chyba</span>
+                </div>
+
+                <div class="field">
+                    <label for="phone">Telefón</label>
+                    <input id="phone"
+                           type="tel"
+                           th:field="*{phone}"
+                           placeholder="+421 900 000 000">
+                </div>
+
+                <div class="field">
+                    <label for="birthDate">Dátum narodenia</label>
+                    <input id="birthDate"
+                           type="date"
+                           th:field="*{birthDate}">
+                    <span class="field-error"
+                          th:if="${#fields.hasErrors('birthDate')}"
+                          th:errors="*{birthDate}">Chyba</span>
+                </div>
+
+            </div>
+
+            <h2 class="form-section-title">Práca &amp; úväzok</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="jobTitle">Pracovná pozícia *</label>
+                    <select id="jobTitle"
+                            th:field="*{jobTitle}"
+                            required>
+                        <option value="">Vyber pracovnú pozíciu</option>
+                        <option th:each="title : ${jobTitles}"
+                                th:value="${title}"
+                                th:text="${title}">
+                            Data Analyst
+                        </option>
+                    </select>
+                    <span class="field-error"
+                          th:if="${#fields.hasErrors('jobTitle')}"
+                          th:errors="*{jobTitle}">Chyba</span>
+                </div>
+
+                <div class="field">
+                    <label for="salary">Plat (€)</label>
+                    <input id="salary"
+                           type="number"
+                           min="0"
+                           step="1"
+                           th:field="*{salary}"
+                           placeholder="napr. 1800">
+                    <span class="field-error"
+                          th:if="${#fields.hasErrors('salary')}"
+                          th:errors="*{salary}">Chyba</span>
+                </div>
+
+                <div class="field span-2">
+                    <span class="field-label"
+                          id="employment-type-label">
+                        Typ úväzku *
+                    </span>
+
+                    <div class="radio-set"
+                         role="group"
+                         aria-labelledby="employment-type-label">
+
+                        <label class="radio-option"
+                               th:each="type : ${employmentTypes}">
+                            <input type="radio"
+                                   th:field="*{fullTime}"
+                                   th:value="${type}"
+                                   required>
+                            <span th:text="${type}">Full-time</span>
+                        </label>
+
+                    </div>
+
+                    <span class="field-error"
+                          th:if="${#fields.hasErrors('fullTime')}"
+                          th:errors="*{fullTime}">Chyba</span>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="submit"
+                        class="button"
+                        th:text="${employee.id == null ? 'Pridať zamestnanca' : 'Uložiť zmeny'}">
+                    Uložiť
+                </button>
+
+                <a class="text-link" th:href="@{/employees}">
+                    Zrušiť
+                </a>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<footer class="footer">
+    <span>people &amp; co. · employee directory</span>
+    <span>a little more human ♡</span>
+</footer>
+
+</body>
+</html>

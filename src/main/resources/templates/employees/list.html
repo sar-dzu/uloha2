@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="sk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Naši ľudia | People & Co.</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" th:href="@{/employees}"><span class="brand-mark" aria-hidden="true">✳</span> people<span>&amp;</span>co.</a>
+    <nav class="site-nav" aria-label="Hlavná navigácia">
+        <a th:href="@{/employees}" aria-current="page">Náš tím</a>
+        <a class="nav-add" th:href="@{/employees/create}">Pridať človeka <span aria-hidden="true">↗</span></a>
+    </nav>
+</header>
+
+<main class="page">
+    <div class="page-heading">
+        <p class="eyebrow">PEOPLE DIRECTORY · 01</p>
+        <h1>Ľudia, ktorí tvoria <em>tím.</em></h1>
+        <p class="lead">Všetky mená, tváre a pracovné príbehy na jednom mieste. Jednoducho a prehľadne.</p>
+    </div>
+
+    <div class="section-top">
+        <p class="section-label" th:text="|Zamestnanci · ${#lists.size(employees)} záznamov|">Zamestnanci</p>
+        <a class="button" th:href="@{/employees/create}">Nový zamestnanec <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(employees)}">
+        <h2>Zatiaľ tu nikto nie je.</h2>
+        <p>Pridaj prvého človeka do svojho tímu.</p>
+        <a class="button" th:href="@{/employees/create}">Pridať zamestnanca</a>
+    </div>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(employees)}">
+        <table class="people-table">
+            <thead>
+            <tr>
+                <th>Človek</th>
+                <th>Pracovná pozícia</th>
+                <th>Úväzok</th>
+                <th>Akcie</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="employee : ${employees}">
+                <td>
+                    <div class="person">
+                        <span class="avatar" aria-hidden="true"
+                              th:text="${#strings.substring(employee.firstName, 0, 1) + #strings.substring(employee.lastName, 0, 1)}">JN</span>
+                        <div>
+                            <a class="person-name" th:href="@{/employees/{id}(id=${employee.id})}"
+                               th:text="|${employee.firstName} ${employee.lastName}|">Jana Nováková</a>
+                            <div class="person-sub" th:text="|ID ${employee.id}|">ID 1</div>
+                        </div>
+                    </div>
+                </td>
+                <td th:text="${employee.jobTitle != null ? employee.jobTitle : '—'}">Data Analyst</td>
+                <td th:text="${employee.fullTime != null ? employee.fullTime : '—'}">Full-time</td>
+                <td>
+                    <div class="actions">
+                        <a class="text-link" th:href="@{/employees/{id}(id=${employee.id})}">Detail</a>
+                        <a class="text-link" th:href="@{/employees/{id}/edit(id=${employee.id})}">Upraviť</a>
+                        <form th:action="@{/employees/{id}/delete(id=${employee.id})}" method="post"
+                              onsubmit="return confirm('Naozaj chceš vymazať tohto zamestnanca?');">
+                            <button class="danger-link" type="submit">Vymazať</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer class="footer"><span>people &amp; co. · employee directory</span><span>a little more human ♡</span></footer>
+</body>
+</html>
